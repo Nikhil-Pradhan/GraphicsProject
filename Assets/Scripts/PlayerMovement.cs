@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour {
     [Header("Movement")]
@@ -12,6 +13,9 @@ public class PlayerMovement : MonoBehaviour {
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
+    
+    private int count;
+    public Text countText;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -21,10 +25,10 @@ public class PlayerMovement : MonoBehaviour {
     public LayerMask whatIsGround;
     bool grounded;
 
-    // [Header("Slope Handling")]
-    // public float maxSlopeAngle;
-    // private RaycastHit slopeHit;
-    // private bool exitingSlope;
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
 
     public Transform orientation;
 
@@ -39,6 +43,8 @@ public class PlayerMovement : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
+        count = 0;
+        SetText();
     }
 
     private void Update() {
@@ -71,52 +77,65 @@ public class PlayerMovement : MonoBehaviour {
     private void MovePlayer()  {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        // if (onSlope() && !exitingSlope) {
-        //     rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
-        //     if (rb.velocity.y > 0)
-        //         rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-        // }
-        if (grounded)
+        if (onSlope() && !exitingSlope) {
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            if (rb.velocity.y > 0)
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+        }
+        else if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         else
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-        // rb.useGravity = !onSlope();
+        rb.useGravity = !onSlope();
     }
 
     private void SpeedControl() {
-        // if (onSlope()) {
-        //     if(rb.velocity.magnitude > moveSpeed && !exitingSlope)
-        //         rb.velocity = rb.velocity.normalized * moveSpeed;
-        // }
-        // else {
+        if (onSlope()) {
+            if(rb.velocity.magnitude > moveSpeed && !exitingSlope)
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+        }
+        else {
             Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
             if(flatVel.magnitude > moveSpeed) {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
-        // }
+        }
     }
 
     private void Jump(){
-        // exitingSlope = true;
+        exitingSlope = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
     private void resetJump() {
         readyToJump = true;
-        // exitingSlope = false;
+        exitingSlope = false;
     }
 
-    // private bool onSlope() {
-    //     if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
-    //         return Vector3.Angle(Vector3.up, slopeHit.normal) < maxSlopeAngle;
-    //     return false;
-    // }
+    private bool onSlope() {
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+            return Vector3.Angle(Vector3.up, slopeHit.normal) < maxSlopeAngle;
+        return false;
+    }
 
-    // private Vector3 GetSlopeMoveDirection() {
-    //     return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
-    // }
+    private Vector3 GetSlopeMoveDirection() {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Collectible"))
+        {
+            other.gameObject.SetActive(false);
+            count = count + 1;
+            SetText();
+        }
+    }
+
+    void SetText(){
+        countText.text = "Count: " + count.ToString();
+    }
 }
