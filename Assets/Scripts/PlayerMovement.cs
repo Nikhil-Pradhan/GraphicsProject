@@ -138,4 +138,8 @@ public class PlayerMovement : MonoBehaviour {
     void SetText(){
         countText.text = "Count: " + count.ToString();
     }
+
+    public int GetScore() {
+        return count;
+    }
 }
