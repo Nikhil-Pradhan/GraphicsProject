@@ -6,21 +6,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     bool gameHasEnded = false;
-    public float restartDelay;
     public GameOverScreen GameOverScreen;
 
-    public void EndGame(int score) {
+    public void EndGame(int score, int highScore) {
         if (!gameHasEnded) {
             gameHasEnded = true;
-            Debug.Log("Game Over");
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            GameOverScreen.Setup(score);
-            // Invoke("Restart",restartDelay);
+            GameOverScreen.Setup(score, highScore);
         }
-    }
-
-    private void Restart() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
