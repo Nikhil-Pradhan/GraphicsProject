@@ -8,7 +8,7 @@ public class GameOverScreen : MonoBehaviour {
     public Text scoreText;
     public Text highScoreText;
 
-    public void Setup (int score, int highScore) {
+    public void Setup (float score, float highScore) {
         gameObject.SetActive(true);
         scoreText.text = "SCORE: " + score.ToString();
         highScoreText.text = "HIGH SCORE: " + highScore.ToString();

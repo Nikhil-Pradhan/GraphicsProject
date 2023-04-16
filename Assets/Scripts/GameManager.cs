@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     bool gameHasEnded = false;
     public GameOverScreen GameOverScreen;
 
-    public void EndGame(int score, int highScore) {
+    public void EndGame(float score, float highScore) {
         if (!gameHasEnded) {
             gameHasEnded = true;
             Cursor.lockState = CursorLockMode.None;

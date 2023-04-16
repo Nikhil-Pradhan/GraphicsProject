@@ -14,8 +14,12 @@ public class PlayerMovement : MonoBehaviour {
     public float airMultiplier;
     bool readyToJump;
     
-    private int count;
+    [Header("Scoring")]
+    private float count;
     public Text countText;
+    public Text multiplierText;
+    private float multiplier;
+    public float durationOfEffect;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -43,8 +47,10 @@ public class PlayerMovement : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
-        count = 0;
-        SetText();
+        count = 0f;
+        multiplier = 1f;
+        SetCountText();
+        SetMultiplierText();
     }
 
     private void Update() {
@@ -127,19 +133,42 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("Collectible"))
-        {
+        if (other.gameObject.CompareTag("Collectible")) {
             other.gameObject.SetActive(false);
-            count = count + 1;
-            SetText();
+            count += multiplier;
+            SetCountText();
+        }
+        else if (other.gameObject.CompareTag("x2")) {
+            other.gameObject.SetActive(false);
+            multiplyx2();
+            Invoke(nameof(multiplyxhalf), durationOfEffect);
+        }
+        else if (other.gameObject.CompareTag("xhalf")) {
+            other.gameObject.SetActive(false);
+            multiplyxhalf();
+            Invoke(nameof(multiplyx2), durationOfEffect);
         }
     }
 
-    void SetText(){
+    void SetCountText(){
         countText.text = "Count: " + count.ToString();
     }
 
-    public int GetScore() {
+    void SetMultiplierText(){
+        multiplierText.text = "Multiplier: " + multiplier.ToString();
+    }
+
+    public float GetScore() {
         return count;
+    }
+
+    void multiplyx2() {
+        multiplier *= 2f;
+        SetMultiplierText();
+    }
+
+    void multiplyxhalf() {
+        multiplier /= 2f;
+        SetMultiplierText();
     }
 }

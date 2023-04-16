@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Collectible
   - Floor
+  - x2
+  - xhalf
   layers:
   - Default
   - TransparentFX
