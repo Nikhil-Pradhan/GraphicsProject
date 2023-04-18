@@ -168,7 +168,7 @@ public class PlayerMovement : MonoBehaviour {
         SetMultiplierText();
     }
 
-    void multiplyxhalf() {
+    public void multiplyxhalf() {
         multiplier /= 2f;
         SetMultiplierText();
     }

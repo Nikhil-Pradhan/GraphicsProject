@@ -8,6 +8,8 @@ TagManager:
   - Floor
   - x2
   - xhalf
+  - Ghost
+  - You Win
   layers:
   - Default
   - TransparentFX

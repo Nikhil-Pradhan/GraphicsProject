@@ -11,7 +11,14 @@ public class PlayerFall : MonoBehaviour {
             float score = movement.GetScore();
             if (highScore < score)
                 highScore = score;
-            FindObjectOfType<GameManager>().EndGame(score, highScore);
+            FindObjectOfType<GameManager>().EndGame(score, highScore, false);
+        }
+        else if (collisionInfo.collider.tag == "You Win") {
+            movement.enabled = false;
+            float score = movement.GetScore();
+            if (highScore < score)
+                highScore = score;
+            FindObjectOfType<GameManager>().EndGame(score, highScore, true);
         }
     }
 }

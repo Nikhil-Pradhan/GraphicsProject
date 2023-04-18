@@ -8,12 +8,12 @@ public class GameManager : MonoBehaviour
     bool gameHasEnded = false;
     public GameOverScreen GameOverScreen;
 
-    public void EndGame(float score, float highScore) {
+    public void EndGame(float score, float highScore, bool won) {
         if (!gameHasEnded) {
             gameHasEnded = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            GameOverScreen.Setup(score, highScore);
+            GameOverScreen.Setup(score, highScore, won);
         }
     }
 }
